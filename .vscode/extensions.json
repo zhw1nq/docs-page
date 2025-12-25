@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "mikestead.dotenv",
+    "streetsidesoftware.code-spell-checker",
+    "yoavbls.pretty-ts-errors",
+    "unifiedjs.vscode-mdx"
+  ]
+}
