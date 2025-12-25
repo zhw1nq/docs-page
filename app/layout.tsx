@@ -44,14 +44,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      {
-        url: "https://7-mau.com/api/discord/737687048147960000.png",
-        type: "image/png",
-      },
-    ],
-    shortcut: "https://7-mau.com/api/discord/737687048147960000.png",
-    apple: "https://7-mau.com/api/discord/737687048147960000.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     type: "website",
