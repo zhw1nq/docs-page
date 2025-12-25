@@ -1,24 +1,75 @@
 import Database from "better-sqlite3";
-import path from "path";
-import fs from "fs";
 import crypto from "crypto";
+import fs from "fs";
+import path from "path";
 
 const DB_PATH = path.join(process.cwd(), "data", "lunaby.db");
+const FALLBACK_PATH = path.join(process.cwd(), "Fallback.json");
 
 let db: Database.Database | null = null;
+let useFallback = false;
+let fallbackData: FallbackData | null = null;
 
-export function getDatabase(): Database.Database {
-  if (!db) {
+interface FallbackSection {
+  title: string;
+  slug: string;
+  content: string;
+  description: string;
+  group_name: string;
+  order_index: number;
+  is_sub_item: boolean;
+  is_published: boolean;
+}
+
+interface FallbackData {
+  version: string;
+  exportedAt?: string;
+  sections: FallbackSection[];
+}
+
+function loadFallbackData(): FallbackData | null {
+  try {
+    if (fs.existsSync(FALLBACK_PATH)) {
+      const content = fs.readFileSync(FALLBACK_PATH, "utf-8");
+      return JSON.parse(content) as FallbackData;
+    }
+  } catch {
+    console.warn("Failed to load Fallback.json");
+  }
+  return null;
+}
+
+function tryInitDatabase(): boolean {
+  try {
     const dir = path.dirname(DB_PATH);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-
     db = new Database(DB_PATH);
     db.pragma("journal_mode = WAL");
     initializeSchema();
+    return true;
+  } catch (error) {
+    console.warn("SQLite initialization failed, using fallback JSON:", error);
+    return false;
+  }
+}
+
+export function getDatabase(): Database.Database | null {
+  if (useFallback) return null;
+
+  if (!db) {
+    if (!tryInitDatabase()) {
+      useFallback = true;
+      fallbackData = loadFallbackData();
+      return null;
+    }
   }
   return db;
+}
+
+export function isUsingFallback(): boolean {
+  return useFallback;
 }
 
 function initializeSchema() {
@@ -167,6 +218,26 @@ export interface Section {
 
 export function getAllSections(): Section[] {
   const database = getDatabase();
+
+  // Fallback to JSON if SQLite is not available
+  if (!database && fallbackData) {
+    return fallbackData.sections.map((s, index) => ({
+      id: index + 1,
+      title: s.title,
+      slug: s.slug,
+      content: s.content,
+      description: s.description,
+      order_index: s.order_index,
+      group_name: s.group_name,
+      is_sub_item: s.is_sub_item,
+      is_published: s.is_published,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }));
+  }
+
+  if (!database) return [];
+
   return database.prepare(`
     SELECT * FROM sections ORDER BY order_index ASC
   `).all() as Section[];
@@ -174,6 +245,28 @@ export function getAllSections(): Section[] {
 
 export function getPublishedSections(): Section[] {
   const database = getDatabase();
+
+  // Fallback to JSON if SQLite is not available
+  if (!database && fallbackData) {
+    return fallbackData.sections
+      .filter(s => s.is_published)
+      .map((s, index) => ({
+        id: index + 1,
+        title: s.title,
+        slug: s.slug,
+        content: s.content,
+        description: s.description,
+        order_index: s.order_index,
+        group_name: s.group_name,
+        is_sub_item: s.is_sub_item,
+        is_published: s.is_published,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }));
+  }
+
+  if (!database) return [];
+
   return database.prepare(`
     SELECT * FROM sections WHERE is_published = 1 ORDER BY order_index ASC
   `).all() as Section[];
@@ -181,6 +274,30 @@ export function getPublishedSections(): Section[] {
 
 export function getSectionBySlug(slug: string): Section | undefined {
   const database = getDatabase();
+
+  // Fallback to JSON if SQLite is not available
+  if (!database && fallbackData) {
+    const found = fallbackData.sections.find(s => s.slug === slug);
+    if (found) {
+      return {
+        id: fallbackData.sections.indexOf(found) + 1,
+        title: found.title,
+        slug: found.slug,
+        content: found.content,
+        description: found.description,
+        order_index: found.order_index,
+        group_name: found.group_name,
+        is_sub_item: found.is_sub_item,
+        is_published: found.is_published,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+    }
+    return undefined;
+  }
+
+  if (!database) return undefined;
+
   return database.prepare(`
     SELECT * FROM sections WHERE slug = ?
   `).get(slug) as Section | undefined;
@@ -196,6 +313,12 @@ export function createSection(data: {
   is_published?: boolean;
 }) {
   const database = getDatabase();
+
+  // Fallback mode: read-only, cannot create
+  if (!database) {
+    throw new Error("Database not available. Running in read-only fallback mode.");
+  }
+
   const maxOrder = database.prepare("SELECT MAX(order_index) as max FROM sections").get() as { max: number | null };
   const orderIndex = (maxOrder.max || 0) + 1;
 
@@ -229,6 +352,12 @@ export function updateSection(id: number, data: Partial<{
   is_published: boolean;
 }>) {
   const database = getDatabase();
+
+  // Fallback mode: read-only, cannot update
+  if (!database) {
+    throw new Error("Database not available. Running in read-only fallback mode.");
+  }
+
   const updates: string[] = [];
   const values: (string | number)[] = [];
 
@@ -253,6 +382,12 @@ export function updateSection(id: number, data: Partial<{
 
 export function deleteSection(id: number) {
   const database = getDatabase();
+
+  // Fallback mode: read-only, cannot delete
+  if (!database) {
+    throw new Error("Database not available. Running in read-only fallback mode.");
+  }
+
   return database.prepare("DELETE FROM sections WHERE id = ?").run(id);
 }
 
@@ -260,6 +395,9 @@ export function deleteSection(id: number) {
 
 export function createApiKey(name: string, userId?: number) {
   const database = getDatabase();
+  if (!database) {
+    throw new Error("Database not available. Running in read-only fallback mode.");
+  }
   const key = `lnby_${generateRandomKey(32)}`;
 
   const stmt = database.prepare(`
@@ -272,14 +410,16 @@ export function createApiKey(name: string, userId?: number) {
 
 export function getAllApiKeys() {
   const database = getDatabase();
+  if (!database) return [];
   return database.prepare(`
-    SELECT id, name, key, created_at, last_used_at, requests_count, is_active 
+    SELECT id, name, key, created_at, last_used_at, requests_count, is_active
     FROM api_keys ORDER BY created_at DESC
   `).all();
 }
 
 export function getApiKeyByKey(key: string) {
   const database = getDatabase();
+  if (!database) return undefined;
   return database.prepare(`
     SELECT * FROM api_keys WHERE key = ? AND is_active = 1
   `).get(key);
@@ -287,15 +427,19 @@ export function getApiKeyByKey(key: string) {
 
 export function updateApiKeyUsage(keyId: number) {
   const database = getDatabase();
+  if (!database) return;
   return database.prepare(`
-    UPDATE api_keys 
-    SET last_used_at = CURRENT_TIMESTAMP, requests_count = requests_count + 1 
+    UPDATE api_keys
+    SET last_used_at = CURRENT_TIMESTAMP, requests_count = requests_count + 1
     WHERE id = ?
   `).run(keyId);
 }
 
 export function deactivateApiKey(keyId: number) {
   const database = getDatabase();
+  if (!database) {
+    throw new Error("Database not available. Running in read-only fallback mode.");
+  }
   return database.prepare("UPDATE api_keys SET is_active = 0 WHERE id = ?").run(keyId);
 }
 
@@ -303,6 +447,7 @@ export function deactivateApiKey(keyId: number) {
 
 export function getAllModels() {
   const database = getDatabase();
+  if (!database) return [];
   return database.prepare("SELECT * FROM models WHERE is_active = 1 ORDER BY name").all();
 }
 
@@ -310,8 +455,9 @@ export function getAllModels() {
 
 export function getUsageStats(days: number = 7) {
   const database = getDatabase();
+  if (!database) return [];
   return database.prepare(`
-    SELECT 
+    SELECT
       DATE(created_at) as date,
       COUNT(*) as requests,
       SUM(tokens_used) as total_tokens,

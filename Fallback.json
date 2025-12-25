@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "exportedAt": "2025-12-25T07:29:22.269Z",
+  "sections": [
+    {
+      "title": "Introduction",
+      "slug": "introduction",
+      "content": "# Introduction\n\nWelcome to the Lunaby API documentation. Access state-of-the-art AI models for chat completions, reasoning, and image generation through a simple, standardized API.\n\n<CodeBlock\n  title=\"Base URL\"\n  tabs={[{ id: \"url\", label: \"URL\", language: \"text\", code: \"https://api.lunie.dev\" }]}\n/>",
+      "description": "Welcome to the Lunaby API",
+      "group_name": "General",
+      "order_index": 1,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "Error Codes",
+      "slug": "errors",
+      "content": "# Error Codes\n\nThe API returns standard HTTP status codes to indicate the success or failure of a request.\n\n<DataTable\n  headers={[\"Code\", \"Description\"]}\n  rows={[\n    [{ code: \"200 OK\" }, { value: \"The request was successful.\" }],\n    [{ code: \"400 Bad Request\" }, { value: \"The request was invalid or missing parameters.\" }],\n    [{ code: \"401 Unauthorized\" }, { value: \"Authentication failed or API key is missing.\" }],\n    [{ code: \"429 Too Many Requests\" }, { value: \"You have hit the rate limit.\" }],\n    [{ code: \"500 Internal Server Error\" }, { value: \"An issue occurred on our servers.\" }]\n  ]}\n/>",
+      "description": "HTTP status codes and error handling",
+      "group_name": "General",
+      "order_index": 2,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "List Models",
+      "slug": "chat-models",
+      "content": "# List Models\n\nAvailable models in the Lunaby ecosystem.\n\n<ModelGrid\n  models={[\n    {\n      title: \"lunaby-pro\",\n      description: \"High-performance model for complex tasks. Best for creative writing, coding, and multi-step reasoning.\",\n      gradient: \"lunaby-pro\"\n    },\n    {\n      title: \"lunaby\",\n      description: \"The standard versatile model. Good balance of speed and capability for general use cases.\",\n      gradient: \"lunaby\"\n    },\n    {\n      title: \"lunaby-vision\",\n      description: \"State-of-the-art image generation model. Turn text descriptions into high-quality visual art.\",\n      gradient: \"lunaby-vision\"\n    }\n  ]}\n/>",
+      "description": "Available AI models",
+      "group_name": "General",
+      "order_index": 3,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "Ecosystem",
+      "slug": "ecosystem",
+      "content": "# Ecosystem\n\nLunaby isn't just an API—it's a complete AI platform. Explore our ecosystem:\n\n<DataTable\n  headers={[\"Component\", \"Description\"]}\n  rows={[\n    [{ label: \"Lunaby SDK\" }, { value: \"Our official TypeScript/JavaScript client for type-safe interactions.\" }],\n    [{ label: \"Lunaby Bot\" }, { value: \"A reference implementation for Discord, showcasing local offline model capabilities.\" }],\n    [{ label: \"LunabyAPI\" }, { value: \"The core service powering all interactions.\" }]\n  ]}\n/>",
+      "description": "Platform components and tools",
+      "group_name": "General",
+      "order_index": 4,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "Quick Start",
+      "slug": "quickstart",
+      "content": "# Quick Start\n\nGet up and running with the Lunaby API in minutes.\n\n<CodeBlock\n  title=\"Install the Lunaby SDK with npm\"\n  tabs={[{ id: \"npm\", label: \"npm\", language: \"bash\", code: \"npm install lunaby-sdk\" }]}\n/>\n\n## Make your first request\n\nHere's how to make your first request using the Lunaby SDK.\n\n<CodeBlock\n  tabs={[\n    {\n      id: \"python\",\n      label: \"Python\",\n      language: \"python\",\n      code: \"from openai import OpenAI\\n\\nclient = OpenAI(\\n    api_key=\\\"YOUR_API_KEY\\\",\\n    base_url=\\\"https://api.lunie.dev/v1\\\"\\n)\\n\\nresponse = client.chat.completions.create(\\n    model=\\\"lunaby-pro\\\",\\n    messages=[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello!\\\"}]\\n)\\nprint(response.choices[0].message.content)\"\n    },\n    {\n      id: \"js\",\n      label: \"Javascript\",\n      language: \"javascript\",\n      code: \"import Lunaby from 'lunaby-sdk';\\n\\nconst client = new Lunaby({\\n    apiKey: process.env.LUNABY_API_KEY,\\n});\\n\\nconst response = await client.chat.create([\\n    { role: 'user', content: 'Hello!' }\\n]);\\nconsole.log(response.data.choices[0].message.content);\"\n    },\n    {\n      id: \"curl\",\n      label: \"cURL\",\n      language: \"bash\",\n      code: \"curl https://api.lunie.dev/v1/chat/completions \\\\\\n  -H \\\"Content-Type: application/json\\\" \\\\\\n  -H \\\"Authorization: Bearer YOUR_API_KEY\\\" \\\\\\n  -d '{\\n    \\\"model\\\": \\\"lunaby-pro\\\",\\n    \\\"messages\\\": [\\n      {\\\"role\\\": \\\"system\\\", \\\"content\\\": \\\"You are a helpful assistant.\\\"},\\n      {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello!\\\"}\\n    ]\\n  }'\"\n    }\n  ]}\n/>",
+      "description": "Get started quickly",
+      "group_name": "Guides",
+      "order_index": 5,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "Chat Completions",
+      "slug": "chat-completions",
+      "content": "# Chat Completions\n\nCreate chat completions using the Lunaby API.\n\n<CodeBlock\n  tabs={[\n    {\n      id: \"python\",\n      label: \"Python\",\n      language: \"python\",\n      code: \"response = client.chat.completions.create(\\n    model=\\\"lunaby-pro\\\",\\n    messages=[\\n        {\\\"role\\\": \\\"system\\\", \\\"content\\\": \\\"You are a helpful assistant.\\\"},\\n        {\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Hello!\\\"}\\n    ]\\n)\\nprint(response.choices[0].message.content)\"\n    },\n    {\n      id: \"js\",\n      label: \"Javascript\",\n      language: \"javascript\",\n      code: \"const response = await client.chat.create([\\n    { role: 'system', content: 'You are a helpful assistant.' },\\n    { role: 'user', content: 'Hello!' }\\n], {\\n    model: 'lunaby-pro',\\n});\\n\\nconsole.log(response.data.choices[0].message.content);\"\n    }\n  ]}\n/>",
+      "description": "Chat API usage",
+      "group_name": "Guides",
+      "order_index": 6,
+      "is_sub_item": false,
+      "is_published": true
+    },
+    {
+      "title": "Streaming",
+      "slug": "chat-streaming",
+      "content": "# Streaming\n\nStream responses in real-time for a better user experience.\n\n<CodeBlock\n  tabs={[\n    {\n      id: \"python\",\n      label: \"Python\",\n      language: \"python\",\n      code: \"stream = client.chat.completions.create(\\n    model=\\\"lunaby-pro\\\",\\n    messages=[{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"Tell me a story\\\"}],\\n    stream=True,\\n)\\nfor chunk in stream:\\n    print(chunk.choices[0].delta.content or \\\"\\\", end=\\\"\\\")\"\n    },\n    {\n      id: \"js\",\n      label: \"Javascript\",\n      language: \"javascript\",\n      code: \"for await (const chunk of client.chat.stream([\\n  { role: 'user', content: 'Tell me a story' }\\n])) {\\n  const content = chunk.choices[0].delta.content;\\n  if (content) {\\n    process.stdout.write(content);\\n  }\\n}\"\n    }\n  ]}\n/>",
+      "description": "Streaming responses",
+      "group_name": "Guides",
+      "order_index": 7,
+      "is_sub_item": true,
+      "is_published": true
+    },
+    {
+      "title": "Vision",
+      "slug": "chat-vision",
+      "content": "# Vision (Image Generation)\n\nGenerate stunning images from text descriptions using the Lunaby Vision model.\n\n<CodeBlock\n  tabs={[\n    {\n      id: \"python\",\n      label: \"Python\",\n      language: \"python\",\n      code: \"response = client.chat.completions.create(\\n    model=\\\"lunaby-vision\\\",\\n    messages=[\\n        {\\n            \\\"role\\\": \\\"user\\\", \\n            \\\"content\\\": \\\"A cyberpunk city in neon rain, 8k resolution\\\"\\n        }\\n    ]\\n)\\nprint(response.choices[0].message.content)\"\n    },\n    {\n      id: \"js\",\n      label: \"Javascript\",\n      language: \"javascript\",\n      code: \"const response = await client.images.generate('A cyberpunk city', {\\n  model: 'lunaby-vision',\\n});\\nconst base64 = response.data.data[0].b64_json;\"\n    }\n  ]}\n/>",
+      "description": "Image generation",
+      "group_name": "Guides",
+      "order_index": 8,
+      "is_sub_item": true,
+      "is_published": true
+    }
+  ]
+}

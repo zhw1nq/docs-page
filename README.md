@@ -14,7 +14,7 @@ A modern, beautiful documentation template built with Next.js 16
 </p>
 
 <p>
-  <a href="https://docs.lunie.dev">
+  <a href="https://lunaby-docs.vercel.app/">
     <img src="https://img.shields.io/badge/Live_Demo-000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
   </a>
   <a href="https://github.com/zhw1nq/docs-page/issues">
