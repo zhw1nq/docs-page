@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { LogIn } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
+import { LogIn, Shield } from "lucide-react";
+import Link from "next/link";
 
 const navLinks = [
     { href: "#", label: "Docs", active: true },
@@ -45,13 +44,13 @@ function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
 
 export function Header({ onMenuToggle, isSidebarOpen }: HeaderProps) {
     return (
-        <header className="h-[60px] bg-background border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-12 flex-shrink-0 z-50 sticky top-0">
+        <header className="h-[60px] bg-background border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8 flex-shrink-0 z-50 sticky top-0">
             {/* Left section */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 {/* Mobile menu button */}
                 <button
                     onClick={onMenuToggle}
-                    className="lg:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors border-none bg-transparent cursor-pointer"
+                    className="lg:hidden p-2 -ml-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors border-none bg-transparent cursor-pointer"
                     aria-label="Toggle menu"
                 >
                     <HamburgerIcon isOpen={isSidebarOpen || false} />
@@ -59,14 +58,14 @@ export function Header({ onMenuToggle, isSidebarOpen }: HeaderProps) {
 
                 <Link href="/" className="text-lg font-semibold tracking-tight text-foreground no-underline">
                     LUNABY
-                    <span className="bg-gradient-to-r from-muted-foreground to-muted-foreground/50 bg-clip-text text-transparent ml-0.5">
+                    <span className="bg-gradient-to-r from-muted-foreground to-muted-foreground/50 bg-clip-text text-transparent ml-1">
                         DOCS
                     </span>
                 </Link>
             </div>
 
             {/* Center nav - hidden on mobile */}
-            <nav className="hidden md:flex gap-6 lg:gap-8">
+            <nav className="hidden md:flex items-center gap-6">
                 {navLinks.map((link) => (
                     <Link
                         key={link.label}
@@ -85,8 +84,15 @@ export function Header({ onMenuToggle, isSidebarOpen }: HeaderProps) {
             <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <a
+                    href="/admin"
+                    className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-muted-foreground text-sm font-medium hover:text-foreground transition-all no-underline"
+                >
+                    <Shield className="w-4 h-4" />
+                    <span className="hidden lg:inline">Admin</span>
+                </a>
+                <a
                     href="https://dashboard.lunie.dev/"
-                    className="hidden sm:flex items-center gap-2 ml-2 px-3 py-2 bg-secondary text-foreground text-sm font-semibold rounded-lg border border-border hover:bg-secondary/80 hover:border-border/80 transition-all no-underline"
+                    className="hidden sm:flex items-center gap-2 px-4 py-1.5 bg-primary text-primary-foreground text-sm font-semibold rounded-full hover:bg-primary/90 transition-all no-underline"
                 >
                     <LogIn className="w-4 h-4" />
                     <span className="hidden lg:inline">Login</span>

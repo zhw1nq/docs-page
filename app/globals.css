@@ -7,7 +7,7 @@
   --color-card-foreground: hsl(0 0% 100%);
   --color-popover: hsl(0 0% 4%);
   --color-popover-foreground: hsl(0 0% 100%);
-  --color-primary: hsl(217 91% 60%);
+  --color-primary: #7F00FF;
   --color-primary-foreground: hsl(0 0% 100%);
   --color-secondary: hsl(0 0% 9%);
   --color-secondary-foreground: hsl(0 0% 100%);
@@ -19,7 +19,7 @@
   --color-destructive-foreground: hsl(0 0% 100%);
   --color-border: hsl(0 0% 13%);
   --color-input: hsl(0 0% 13%);
-  --color-ring: hsl(217 91% 60%);
+  --color-ring: #7F00FF;
   --radius: 0.5rem;
 }
 
@@ -30,7 +30,7 @@
   --color-card-foreground: hsl(0 0% 7%);
   --color-popover: hsl(0 0% 98%);
   --color-popover-foreground: hsl(0 0% 7%);
-  --color-primary: hsl(217 91% 60%);
+  --color-primary: #7F00FF;
   --color-primary-foreground: hsl(0 0% 100%);
   --color-secondary: hsl(0 0% 94%);
   --color-secondary-foreground: hsl(0 0% 7%);
@@ -42,7 +42,7 @@
   --color-destructive-foreground: hsl(0 0% 100%);
   --color-border: hsl(0 0% 90%);
   --color-input: hsl(0 0% 90%);
-  --color-ring: hsl(217 91% 60%);
+  --color-ring: #7F00FF;
 }
 
 body {
@@ -65,9 +65,10 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Custom Scrollbar - Webkit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -75,12 +76,24 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+  background: var(--color-muted-foreground);
+  opacity: 0.3;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-muted-foreground);
+  background: var(--color-foreground);
+  opacity: 0.5;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Custom Scrollbar - Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-muted-foreground) transparent;
 }
 
 code {

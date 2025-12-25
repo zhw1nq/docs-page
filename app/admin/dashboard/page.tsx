@@ -1,31 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-    LayoutDashboard,
-    FileText,
-    Settings,
-    LogOut,
-    Plus,
-    Edit,
-    Trash2,
-    Eye,
-    Save,
-    X,
-    ChevronRight,
-    ChevronUp,
-    ChevronDown,
-    Menu,
-    Check,
-    AlertCircle,
-    Code,
-    Copy,
-    ExternalLink,
-} from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
+import {
+    AlertCircle,
+    Check,
+    ChevronDown,
+    ChevronUp,
+    Code,
+    Copy,
+    Edit,
+    ExternalLink,
+    Eye,
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    Plus,
+    Save,
+    Settings,
+    Trash2,
+    X
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // Types
 interface Section {
@@ -53,14 +52,21 @@ function NavItem({ icon, label, active, onClick }: {
         <button
             onClick={onClick}
             className={cn(
-                "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-colors cursor-pointer border-none text-left",
+                "group relative w-full text-left flex items-center gap-2 py-2 px-3 text-[13px] rounded-md transition-colors duration-150 cursor-pointer border-none",
                 active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary bg-transparent"
+                    ? "text-foreground font-medium bg-secondary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 bg-transparent"
             )}
         >
+            {/* Active indicator line */}
+            <span
+                className={cn(
+                    "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full transition-all duration-150",
+                    active ? "bg-primary" : "bg-transparent"
+                )}
+            />
             {icon}
-            <span className="font-medium text-sm">{label}</span>
+            <span className="truncate">{label}</span>
         </button>
     );
 }
@@ -296,21 +302,12 @@ export default function AdminDashboard() {
 
             {/* Sidebar */}
             <aside className={cn(
-                "w-[260px] bg-card border-r border-border flex flex-col h-full z-50",
+                "w-[260px] bg-background border-r border-border flex flex-col h-full z-50",
                 "fixed lg:relative transition-transform duration-200",
                 "lg:translate-x-0",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="h-[60px] flex items-center justify-between px-4 border-b border-border flex-shrink-0">
-                    <Link href="/admin/dashboard" className="text-lg font-semibold tracking-tight text-foreground no-underline">
-                        LUNABY<span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent ml-0.5">ADMIN</span>
-                    </Link>
-                    <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-2 text-muted-foreground hover:text-foreground cursor-pointer bg-transparent border-none" aria-label="Close">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto pt-6">
                     <NavItem icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
                     <NavItem icon={<FileText className="w-5 h-5" />} label="Sections" active={activeTab === "sections"} onClick={() => setActiveTab("sections")} />
                     <NavItem icon={<Settings className="w-5 h-5" />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
@@ -326,22 +323,33 @@ export default function AdminDashboard() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-                {/* Header */}
-                <header className="h-[60px] bg-card border-b border-border flex items-center justify-between px-4 lg:px-6 flex-shrink-0">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 text-muted-foreground hover:text-foreground cursor-pointer bg-transparent border-none" aria-label="Menu">
+                {/* Header - Same as docs page */}
+                <header className="h-[60px] bg-background border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8 flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setSidebarOpen(true)}
+                            className="lg:hidden p-2 -ml-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors border-none bg-transparent cursor-pointer"
+                            aria-label="Toggle menu"
+                        >
                             <Menu className="w-5 h-5" />
                         </button>
-                        <h1 className="text-lg font-semibold truncate">
-                            {activeTab === "dashboard" && "Dashboard"}
-                            {activeTab === "sections" && "Sections"}
-                            {activeTab === "settings" && "Settings"}
-                        </h1>
+
+                        <Link href="/admin/dashboard" className="text-lg font-semibold tracking-tight text-foreground no-underline">
+                            LUNABY
+                            <span className="bg-gradient-to-r from-muted-foreground to-muted-foreground/50 bg-clip-text text-transparent ml-1">
+                                DOCS
+                            </span>
+                        </Link>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <a href="/" target="_blank" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+
+                    <div className="flex items-center gap-2">
+                        <a
+                            href="/"
+                            target="_blank"
+                            className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-muted-foreground text-sm font-medium hover:text-foreground transition-all no-underline"
+                        >
                             <ExternalLink className="w-4 h-4" />
-                            <span className="hidden sm:inline">View Docs</span>
+                            <span className="hidden lg:inline">View Docs</span>
                         </a>
                         <ThemeToggle />
                     </div>
@@ -454,6 +462,165 @@ export default function AdminDashboard() {
                     {/* Settings Tab */}
                     {activeTab === "settings" && (
                         <div className="space-y-6 max-w-2xl">
+                            {/* Theme Colors */}
+                            <div className="bg-card border border-border rounded-xl p-6">
+                                <h2 className="text-lg font-semibold mb-6">Theme Colors</h2>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    Customize the color scheme of your documentation. Changes are applied in real-time.
+                                </p>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Primary</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#7F00FF"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-primary', e.target.value);
+                                                    document.documentElement.style.setProperty('--color-ring', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#7F00FF"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-primary', e.target.value);
+                                                        document.documentElement.style.setProperty('--color-ring', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#7F00FF"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Background</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#000000"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-background', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#000000"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-background', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#000000"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Card</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#0a0a0a"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-card', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#0a0a0a"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-card', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#0a0a0a"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Border</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#212121"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-border', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#212121"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-border', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#212121"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Destructive</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#ef4444"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-destructive', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#ef4444"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-destructive', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#ef4444"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Secondary</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="color"
+                                                defaultValue="#171717"
+                                                onChange={(e) => {
+                                                    document.documentElement.style.setProperty('--color-secondary', e.target.value);
+                                                }}
+                                                className="w-10 h-10 rounded-lg border border-border cursor-pointer"
+                                            />
+                                            <input
+                                                type="text"
+                                                defaultValue="#171717"
+                                                onChange={(e) => {
+                                                    if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                                        document.documentElement.style.setProperty('--color-secondary', e.target.value);
+                                                    }
+                                                }}
+                                                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-foreground text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                                placeholder="#171717"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="mt-4 text-xs text-muted-foreground">
+                                    Note: Colors are previewed in real-time but not persisted. To save permanently, update the CSS variables in <code className="bg-secondary px-1 py-0.5 rounded">globals.css</code>.
+                                </p>
+                            </div>
+
                             {/* Site Settings */}
                             <div className="bg-card border border-border rounded-xl p-6">
                                 <h2 className="text-lg font-semibold mb-6">Site Settings</h2>

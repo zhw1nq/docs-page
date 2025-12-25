@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 interface NavItem {
     id: string;
@@ -52,7 +52,7 @@ export function Sidebar({ navigation, activeSection, onNavigate, isOpen, onClose
             {/* Sidebar */}
             <aside
                 className={cn(
-                    "w-[260px] bg-card border-r border-border flex flex-col h-full overflow-hidden flex-shrink-0 z-50",
+                "w-[260px] bg-background border-r border-border flex flex-col h-full overflow-hidden flex-shrink-0 z-50",
                     "fixed lg:relative transition-transform duration-200 ease-out",
                     "lg:translate-x-0",
                     isOpen ? "translate-x-0" : "-translate-x-full"
