@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { CodeBlock } from "@/components/docs/CodeBlock";
+import { DataTable } from "@/components/docs/DataTable";
+import { ModelGrid } from "@/components/docs/ModelCard";
+import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { Footer } from "@/components/layout/Footer";
-import { CodeBlock } from "@/components/docs/CodeBlock";
-import { ModelGrid } from "@/components/docs/ModelCard";
-import { DataTable } from "@/components/docs/DataTable";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface NavItem {
   id: string;
@@ -163,14 +163,21 @@ export default function DocsPage() {
                 id={section.slug}
                 className="mb-16 lg:mb-20 scroll-mt-24"
               >
-                <DocContent content={section.content || `# ${section.title}\n\n${section.description || ""}`} />
+                <DocContent
+                  content={
+                    section.content ||
+                    `# ${section.title}\n\n${section.description || ""}`
+                  }
+                />
               </section>
             ))}
 
             {sections.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <p>No documentation sections available.</p>
-                <p className="text-sm mt-2">Add sections from the admin panel.</p>
+                <p className="text-sm mt-2">
+                  Add sections from the admin panel.
+                </p>
               </div>
             )}
           </div>
@@ -199,7 +206,10 @@ function DocContent({ content }: { content: string }) {
     // Headers
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={key++} className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 tracking-tight">
+        <h1
+          key={key++}
+          className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 tracking-tight"
+        >
           {line.slice(2)}
         </h1>
       );
@@ -209,7 +219,10 @@ function DocContent({ content }: { content: string }) {
 
     if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={key++} className="text-xl lg:text-2xl font-semibold mb-4 lg:mb-6 mt-8">
+        <h2
+          key={key++}
+          className="text-xl lg:text-2xl font-semibold mb-4 lg:mb-6 mt-8"
+        >
           {line.slice(3)}
         </h2>
       );
@@ -219,7 +232,10 @@ function DocContent({ content }: { content: string }) {
 
     if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={key++} className="text-base lg:text-lg font-semibold mt-8 mb-4">
+        <h3
+          key={key++}
+          className="text-base lg:text-lg font-semibold mt-8 mb-4"
+        >
           {line.slice(4)}
         </h3>
       );
@@ -228,10 +244,11 @@ function DocContent({ content }: { content: string }) {
     }
 
     // Component blocks
-    if (line.trim().startsWith("<CodeBlock") ||
+    if (
+      line.trim().startsWith("<CodeBlock") ||
       line.trim().startsWith("<DataTable") ||
-      line.trim().startsWith("<ModelGrid")) {
-
+      line.trim().startsWith("<ModelGrid")
+    ) {
       let componentStr = line;
       let depth = 1;
 
@@ -239,7 +256,11 @@ function DocContent({ content }: { content: string }) {
         i++;
         while (i < lines.length && depth > 0) {
           componentStr += "\n" + lines[i];
-          if (lines[i].includes("<CodeBlock") || lines[i].includes("<DataTable") || lines[i].includes("<ModelGrid")) {
+          if (
+            lines[i].includes("<CodeBlock") ||
+            lines[i].includes("<DataTable") ||
+            lines[i].includes("<ModelGrid")
+          ) {
             depth++;
           }
           if (lines[i].includes("/>") || lines[i].includes("</")) {
@@ -265,7 +286,10 @@ function DocContent({ content }: { content: string }) {
     // Paragraph
     if (line.trim() && !line.startsWith("<")) {
       elements.push(
-        <p key={key++} className="text-muted-foreground text-sm lg:text-base leading-relaxed mb-4">
+        <p
+          key={key++}
+          className="text-muted-foreground text-sm lg:text-base leading-relaxed mb-4"
+        >
           {line}
         </p>
       );
@@ -290,7 +314,9 @@ function parseComponent(str: string): React.ReactNode | null {
       const tabs = tabsMatch ? eval(tabsMatch[1]) : [];
       const dropdownMatch = str.match(/dropdownTabs=\{(\[[\s\S]*?\])\}/);
       const dropdownTabs = dropdownMatch ? eval(dropdownMatch[1]) : [];
-      return <CodeBlock tabs={tabs} title={title} dropdownTabs={dropdownTabs} />;
+      return (
+        <CodeBlock tabs={tabs} title={title} dropdownTabs={dropdownTabs} />
+      );
     }
 
     if (componentName === "DataTable") {
